@@ -454,14 +454,19 @@ class FlipMove extends Component {
       return this.props.leaveAnimation.from;
     }
 
-    const [dX, dY] = getPositionDelta({
+    const [dX, dY, sX, sY] = getPositionDelta({
       childData: this.childrenData[child.key],
       parentData: this.parentData,
       getPosition: this.props.getPosition,
     });
 
+    let transform = `translate(${dX}px, ${dY}px)`
+    if (this.props.scale) {
+      transform += ` scale(${sX}, ${sY})`
+    }
+
     return {
-      transform: `translate(${dX}px, ${dY}px)`,
+      transform
     };
   }
 
@@ -507,13 +512,13 @@ class FlipMove extends Component {
 
     // If it isn't entering/leaving, we want to animate it if it's
     // on-screen position has changed.
-    const [dX, dY] = getPositionDelta({
+    const [dX, dY, sX, sY] = getPositionDelta({
       childData,
       parentData: this.parentData,
       getPosition,
     });
 
-    return dX !== 0 || dY !== 0;
+    return dX !== 0 || dY !== 0 || sX !== 1 || sY !== 1;
   }
 
   findChildByKey(key) {

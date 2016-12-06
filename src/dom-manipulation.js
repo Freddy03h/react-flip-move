@@ -53,13 +53,15 @@ export const getRelativeBoundingBox = ({
   const { domNode: parentDomNode } = parentData;
 
   const parentBox = getPosition(parentDomNode);
-  const { top, left, right, bottom } = getPosition(childDomNode);
+  const { top, left, right, bottom, width, height } = getPosition(childDomNode);
 
   return {
     top: top - parentBox.top,
     left: left - parentBox.left,
     right: parentBox.right - right,
     bottom: parentBox.bottom - bottom,
+    width,
+    height,
   };
 };
 
@@ -93,14 +95,18 @@ export const getPositionDelta = ({
   // to the viewport), and then we calculate its relative box (relative to the
   // parent container)
   const newAbsoluteBox = getPosition(childData.domNode);
+  const newAbsoluteParentBox = getPosition(parentData.domNode);
+
   const newRelativeBox = {
-    top: newAbsoluteBox.top - parentData.boundingBox.top,
-    left: newAbsoluteBox.left - parentData.boundingBox.left,
+    top: newAbsoluteBox.top - newAbsoluteParentBox.top,
+    left: newAbsoluteBox.left - newAbsoluteParentBox.left,
   };
 
   return [
     oldRelativeBox.left - newRelativeBox.left,
     oldRelativeBox.top - newRelativeBox.top,
+    oldRelativeBox.width / newAbsoluteBox.width,
+    oldRelativeBox.height / newAbsoluteBox.height,
   ];
 };
 
@@ -140,7 +146,8 @@ export const removeNodeFromDOMFlow = ({ domNode, boundingBox }) => {
     position: 'absolute',
     top: `${boundingBox.top - margins['margin-top']}px`,
     left: `${boundingBox.left - margins['margin-left']}px`,
-    right: `${boundingBox.right - margins['margin-right']}px`,
+    width: `${boundingBox.width}px`,
+    height: `${boundingBox.height}px`,
   };
 
   applyStylesToDOMNode({ domNode, styles });

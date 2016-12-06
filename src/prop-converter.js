@@ -201,6 +201,7 @@ function propConverter(ComposedComponent) {
     disableAllAnimations: PropTypes.bool,
     getPosition: PropTypes.func,
     maintainContainerHeight: PropTypes.bool.isRequired,
+    scale: PropTypes.bool,
   };
 
   FlipMovePropConverter.defaultProps = {
@@ -215,6 +216,7 @@ function propConverter(ComposedComponent) {
     disableAllAnimations: false,
     getPosition: node => node.getBoundingClientRect(),
     maintainContainerHeight: false,
+    scale: false,
   };
 
   return FlipMovePropConverter;
